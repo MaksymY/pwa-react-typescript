@@ -1,35 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { PokemonItem } from "./PokemonItem";
 
-interface Pokemon {
-  name: string;
-  id: number;
-}
+type Props = {
+  pokemons: Array<Pokemon>;
+};
 
-export const ListPokemons = () => {
-  const [pokemons, setPokemon] = useState<Array<Pokemon>>([]);
-
-  useEffect(() => {
-    Promise.all(
-      Array.from({ length: 100 }, (_, index) =>
-        fetch(`https://pokeapi.co/api/v2/pokemon/${index + 1}`).then((value) =>
-          value.json(),
-        ),
-      ),
-    )
-      .then((values) => {
-        setPokemon(values);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
+export const ListPokemons = ({ pokemons }: Props) => {
   return (
     <ul>
       {pokemons &&
-        pokemons.map((value) => {
-          const { name, id } = value;
-          return <li key={id}>{name}</li>;
+        pokemons.map((pokemon) => {
+          return <PokemonItem key={pokemon.id} pokemon={pokemon} />;
         })}
     </ul>
   );
