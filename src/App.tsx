@@ -1,6 +1,7 @@
 import React from "react";
 import { ListPokemons } from "./components/ListPokemons";
 import { usePokemons } from "./hooks/pokemons.kook";
+import { Calendar } from "./Calendar";
 
 function App() {
   const pokemons = usePokemons();
@@ -8,6 +9,7 @@ function App() {
   return (
     <main>
       <ListPokemons pokemons={pokemons} />
+      <Calendar />
     </main>
   );
 }
