@@ -8,8 +8,8 @@ function App() {
 
   return (
     <main>
-      <ListPokemons pokemons={pokemons} />
       <Calendar />
+      <ListPokemons pokemons={pokemons} />
     </main>
   );
 }

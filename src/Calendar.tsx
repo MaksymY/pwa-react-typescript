@@ -10,7 +10,7 @@ import "./main.scss";
 const BaseEvent = { title: "Entrainement en apesanteur", start: new Date() };
 
 export const Calendar = () => {
-  /* onst [calendarWeekends, setCalendarWeekends] = useState<boolean>(true); */
+  /*const [calendarWeekends, setCalendarWeekends] = useState<boolean>(true); */
   const [calendarEvents, setcalendarEvents] = useState<EventInput[]>([
     BaseEvent,
   ]);
@@ -31,11 +31,11 @@ export const Calendar = () => {
       defaultView="dayGridMonth"
       locales={[frLocale]}
       locale={"fr"}
-      header={{
+      /* header={{
         left: "prev,next today",
         center: "title",
         right: "dayGridMonth,timeGridWeek,timeGridDay",
-      }}
+      }} */
       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
       events={calendarEvents}
       dateClick={handleDateClick}
