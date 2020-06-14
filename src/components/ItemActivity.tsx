@@ -1,17 +1,24 @@
 import React from "react";
-import { isToday, isTomorrow, isThisWeek, isThisMonth } from "date-fns";
+import {
+  isToday,
+  isTomorrow,
+  isThisWeek,
+  isThisMonth,
+  getDate,
+} from "date-fns";
 
 type Props = {
   dateEvent: {
     title: string;
-    start: Date | number;
+    start: Date;
     dateStr: string;
   };
 };
 
 export const ItemActivity = ({ dateEvent }: Props) => {
+  const day = dateEvent.start;
+
   const isActual = (() => {
-    const day = dateEvent.start;
     if (isToday(day)) return "Aujourd'hui";
     if (isTomorrow(day)) return "Demain";
     if (isThisWeek(day)) return "Cette semaine";
@@ -19,12 +26,18 @@ export const ItemActivity = ({ dateEvent }: Props) => {
     return "A venir";
   })();
 
+  const theDay = day.toLocaleString("default", { weekday: "long" });
+
+  const theMounth = `${getDate(day)} ${day.toLocaleString("default", {
+    month: "long",
+  })}`;
+
   return (
     <div>
       <h2>{isActual}</h2>
       <li>
-        <p>mercredi</p>
-        <p>10 juin</p>
+        <p>{theDay}</p>
+        <p>{theMounth}</p>
         <p>{dateEvent.title}</p>
         <p>10:00 - 13:00</p>
       </li>

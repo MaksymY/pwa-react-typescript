@@ -4,7 +4,7 @@ import Bus from "../Bus";
 
 type Props = {
   title: string;
-  start: Date | number;
+  start: Date;
   dateStr: string;
 };
 
