@@ -1,7 +1,5 @@
 import React from "react";
-import { EventInput } from "@fullcalendar/core";
-import { isToday } from "date-fns";
-import { is } from "date-fns/esm/locale";
+import { isToday, isTomorrow, isThisWeek, isThisMonth } from "date-fns";
 
 type Props = {
   dateEvent: {
@@ -11,16 +9,16 @@ type Props = {
   };
 };
 
-/* type Props = {
-  dateEvent: EventInput;
-}; */
-
 export const ItemActivity = ({ dateEvent }: Props) => {
-  const isActual = () => {
-    return isToday(dateEvent.start)
-      ? "Aujourd'hui"
-      : "IL FAUT FINIR LA CONDIITON";
-  };
+  const isActual = (() => {
+    const day = dateEvent.start;
+    if (isToday(day)) return "Aujourd'hui";
+    if (isTomorrow(day)) return "Demain";
+    if (isThisWeek(day)) return "Cette semaine";
+    if (isThisMonth(day)) return "Ce mois-ci";
+    return "A venir";
+  })();
+
   return (
     <div>
       <h2>{isActual}</h2>

@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { ItemActivity } from "./ItemActivity";
-import { EventInput } from "@fullcalendar/core";
 import Bus from "../Bus";
 
+type Props = {
+  title: string;
+  start: Date | number;
+  dateStr: string;
+};
+
 export const ListActivity = () => {
-  const [alldates, setAllDates] = useState<EventInput[]>([]);
+  const [alldates, setAllDates] = useState<Props[]>([]);
 
   useEffect(() => {
     Bus.on("EventDates", setAllDates);
