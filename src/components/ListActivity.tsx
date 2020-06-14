@@ -7,10 +7,8 @@ export const ListActivity = () => {
   const [alldates, setAllDates] = useState<EventInput[]>([]);
 
   useEffect(() => {
-    Bus.on("EventDates", (data: any) => {
-      setAllDates(data);
-    });
-  });
+    Bus.on("EventDates", setAllDates);
+  }, []);
 
   return (
     <div>
@@ -18,7 +16,7 @@ export const ListActivity = () => {
       <ul>
         {alldates &&
           alldates.map((value) => {
-            return <ItemActivity dateEvent={value} />;
+            return <ItemActivity key={value.title} dateEvent={value} />;
           })}
       </ul>
     </div>

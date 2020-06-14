@@ -1,89 +1,67 @@
-import { isString, isFunction, isPosInt } from "./utils";
+import { isString, isFunction } from "./utils";
 
-function copy(target) {
-  return Object.entries(target).reduce((acc, [key, val]) => {
-    acc[key] = Array.from(val);
-    return acc;
-  }, {});
-}
-
-let states = {};
 let once = {};
 let events = {};
 
-async function dispatchOnce(name, data) {
-  if (Array.isArray(once[name])) {
-    const clone = Array.from(once[name]);
-    delete once[name];
-    clone.forEach(async (callback) => callback(data));
-  }
-}
-
-async function dispatchEvents(name, data) {
-  if (Array.isArray(events[name])) {
-    const event = events[name];
-    if (event.length && states[name]) {
-      event.forEach(async (callback) => callback(data));
-    }
-  }
-}
-
 export default Object.freeze({
-  get states() {
-    return copy(states);
-  },
-  get onceEvents() {
-    return copy(once);
-  },
-  get events() {
-    return copy(events);
-  },
-  async emit(name, data) {
+  // emit an event
+  emit(name, data) {
     if (isString(name) && name.length) {
-      dispatchOnce(name, data);
-      dispatchEvents(name, data);
+      const onceEvent = once[name];
+      const event = events[name];
+      if (Array.isArray(onceEvent)) {
+        const clone = Array.from(onceEvent);
+        delete once[name];
+        clone.forEach((callback) => callback(data));
+      }
+      if (Array.isArray(event)) {
+        event.forEach((callback) => callback(data));
+      }
     }
   },
+
+  // reset bus
+  kill() {
+    once = {};
+    events = {};
+  },
+
+  // remove all listeners but those called once
   end(name) {
-    delete states[name];
     delete events[name];
   },
+
+  // remove all listeners tied to an event
   clear(name) {
     delete once[name];
     this.end(name);
   },
+
+  // register event with a callback
   on(name, callback) {
-    if (!isString(name) || !name.length || !isFunction(callback)) return -1;
+    if (!isString(name) || !name.length || !isFunction(callback)) return;
 
-    if (!(name in events)) {
-      states[name] = true;
+    if (name in events) {
+      if (events[name].includes(callback)) return;
+      events[name].push(callback);
+    } else {
       events[name] = [callback];
-      return 0;
     }
-    const index = events[name].findIndex((c) => c === callback);
-    return index >= 0 ? index : events[name].push(callback) - 1;
   },
+
+  // The event is called just one time then removed
   once(name, callback) {
-    if (!isString(name) || !name.length || !isFunction(callback)) return -1;
+    if (!isString(name) || !name.length || !isFunction(callback)) return;
 
-    if (!(name in once)) {
+    if (name in once) {
+      if (once[name].includes(callback)) return;
+      once[name].push(callback);
+    } else {
       once[name] = [callback];
-      return 0;
     }
-    const index = once[name].findIndex((c) => c === callback);
-    return index >= 0 ? index : once[name].push(callback) - 1;
   },
-  offIndex(name, index) {
-    if (
-      !isString(name) ||
-      !name.length ||
-      !isPosInt(index, true) ||
-      (Array.isArray(events[name]) && index > events[name].length)
-    )
-      return;
 
-    events[name].splice(index, 1);
-  },
+  // like clear but it needs callback reference
   off(name, reference) {
     if (!isString(name) || !isFunction(reference) || !events[name]) return;
     const index = events[name].findIndex((c) => c === reference);

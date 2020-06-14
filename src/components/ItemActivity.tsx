@@ -1,22 +1,29 @@
 import React from "react";
 import { EventInput } from "@fullcalendar/core";
-
-/* type Props = {
-  dateEvent: {
-    title: string;
-    start: any;
-    dateStr: string;
-  };
-}; */
+import { isToday } from "date-fns";
+import { is } from "date-fns/esm/locale";
 
 type Props = {
-  dateEvent: EventInput;
+  dateEvent: {
+    title: string;
+    start: Date | number;
+    dateStr: string;
+  };
 };
 
+/* type Props = {
+  dateEvent: EventInput;
+}; */
+
 export const ItemActivity = ({ dateEvent }: Props) => {
+  const isActual = () => {
+    return isToday(dateEvent.start)
+      ? "Aujourd'hui"
+      : "IL FAUT FINIR LA CONDIITON";
+  };
   return (
     <div>
-      <h2>Aujourd'hui</h2>
+      <h2>{isActual}</h2>
       <li>
         <p>mercredi</p>
         <p>10 juin</p>
